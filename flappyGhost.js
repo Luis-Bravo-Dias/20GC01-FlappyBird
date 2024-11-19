@@ -30,6 +30,8 @@ let bottomArmImg
 
 //physics
 let velocityX = -1.5 //pipes moving left speed
+let velocityY = 0 //ghost jump speed
+let gravity = 0.2
 
 
 
@@ -58,6 +60,7 @@ window.onload = function()
 	
 	requestAnimationFrame(update)
 	setInterval(placeArms, 1500) //every 1.5 seconds
+	document.addEventListener("keydown", moveGhost)
 }
 
 function update() {
@@ -65,6 +68,8 @@ function update() {
 	context.clearRect(0, 0, board.width, board.height)
 
 	//ghost
+	velocityY += gravity
+	ghost.y += velocityY
 	context.drawImage(pokeSprite, ghost.x, ghost.y, ghost.width, ghost.height)
 
 	//giratina
@@ -79,6 +84,7 @@ function update() {
 function placeArms() {
 	
 	let randomArmY = armY - armHeight/4 - Math.random()*(armHeight/2)
+	let openingSpace = board.height/5
 	
 	let topArm = {
 		img : topArmImg,
@@ -90,4 +96,23 @@ function placeArms() {
 	}
 
 	giratina.push(topArm)
+
+	let bottomArm = {
+		img : bottomArmImg,
+		x : armX,
+		y : randomArmY + armHeight + openingSpace,
+		width : armWidth,
+		height : armHeight,
+		passed : false
+	}
+
+	giratina.push(bottomArm)
+}
+
+function moveGhost(key) {
+	if (key.code == "Space" || key.code == "ArrowUp" || key.code == "keyX")
+	{
+		//jump
+		velocityY = -6
+	}
 }
