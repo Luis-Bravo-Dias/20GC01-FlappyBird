@@ -28,6 +28,11 @@ let armY = 0
 let topArmImg
 let bottomArmImg
 
+//physics
+let velocityX = -1.5 //pipes moving left speed
+
+
+
 window.onload = function()
 {
 	board = document.getElementById("board")
@@ -66,15 +71,19 @@ function update() {
 	for (let i = 0; i < giratina.length; i++)
 	{
 		let arm = giratina[i]
+		arm.x += velocityX
 		context.drawImage(arm.img, arm.x, arm.y, arm.width, arm.height)
 	}
 }
 
 function placeArms() {
+	
+	let randomArmY = armY - armHeight/4 - Math.random()*(armHeight/2)
+	
 	let topArm = {
 		img : topArmImg,
 		x : armX,
-		y : armY,
+		y : randomArmY,
 		width : armWidth,
 		height : armHeight,
 		passed : false
