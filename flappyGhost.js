@@ -31,9 +31,10 @@ let bottomArmImg
 //physics
 let velocityX = -1.5 //pipes moving left speed
 let velocityY = 0 //ghost jump speed
-let gravity = 0.2
+let gravity = 0.1
 
-
+let gameOver = false
+let score = 0
 
 window.onload = function()
 {
@@ -65,12 +66,18 @@ window.onload = function()
 
 function update() {
 	requestAnimationFrame(update)
+	if (gameOver)
+		return
 	context.clearRect(0, 0, board.width, board.height)
 
 	//ghost
 	velocityY += gravity
-	ghost.y += velocityY
+	//ghost.y += velocityY
+	ghost.y = Math.max(ghost.y + velocityY, 0)
 	context.drawImage(pokeSprite, ghost.x, ghost.y, ghost.width, ghost.height)
+
+	if (ghost.y > board.height)
+		gameOver = true
 
 	//giratina
 	for (let i = 0; i < giratina.length; i++)
@@ -78,13 +85,41 @@ function update() {
 		let arm = giratina[i]
 		arm.x += velocityX
 		context.drawImage(arm.img, arm.x, arm.y, arm.width, arm.height)
+
+		if (!arm.passed && ghost.x > arm.x + arm.width)
+		{
+			score += 0.5
+			arm.passed = true
+		}
+
+
+		if (superEffective(ghost, arm))
+			gameOver = true
 	}
+
+	//clear arms
+	while (giratina.length > 0 && giratina[0].x < - armWidth)
+	{
+		giratina.shift() //removes first element of the array
+	}
+
+
+	//score
+	context.fillStyle = "white"
+	context.font = "45px sans-serif"
+	context.fillText(score, 5, 45)
+
+	if (gameOver)
+		context.fillText("GAME OVER", 5, 90)
 }
 
 function placeArms() {
 	
+	if (gameOver)
+		return
+	
 	let randomArmY = armY - armHeight/4 - Math.random()*(armHeight/2)
-	let openingSpace = board.height/5
+	let openingSpace = board.height/3
 	
 	let topArm = {
 		img : topArmImg,
@@ -113,6 +148,23 @@ function moveGhost(key) {
 	if (key.code == "Space" || key.code == "ArrowUp" || key.code == "keyX")
 	{
 		//jump
-		velocityY = -6
+		velocityY = -4.5
+
+		//reset game
+		if (gameOver)
+		{
+			ghost.y = ghostY
+			giratina = []
+			score = 0
+			gameOver = false
+		}
 	}
+}
+
+function superEffective(a, b)
+{
+	return	a.x < b.x + b.width &&
+			a.x + a.width > b.x &&
+			a.y < b.y + b.height &&
+			a.y + a.height > b.y
 }
