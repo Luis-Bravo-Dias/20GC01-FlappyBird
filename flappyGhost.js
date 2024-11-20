@@ -36,6 +36,11 @@ let gravity = 0.1
 let gameOver = false
 let score = 0
 
+//evoluition
+let gastly = "./sprites/gastly.png"
+let haunter = "./sprites/haunter.png"
+let gengar = "./sprites/gengar.png"
+
 window.onload = function()
 {
 	board = document.getElementById("board")
@@ -49,7 +54,7 @@ window.onload = function()
 
 	//load images
 	pokeSprite = new Image()
-	pokeSprite.src = "./sprites/gastly.png"
+	pokeSprite.src = gastly
 	pokeSprite.onload = function(){
 		context.drawImage(pokeSprite, ghost.x, ghost.y, ghost.width, ghost.height)}
 	
@@ -69,6 +74,12 @@ function update() {
 	if (gameOver)
 		return
 	context.clearRect(0, 0, board.width, board.height)
+
+	//evolution
+	if (score >= 50 && pokeSprite.src !== gengar)
+		pokeSprite.src = gengar
+	else if (score >= 25 && score < 50 && pokeSprite.src !== haunter)
+		pokeSprite.src = haunter
 
 	//ghost
 	velocityY += gravity
@@ -157,6 +168,7 @@ function moveGhost(key) {
 			giratina = []
 			score = 0
 			gameOver = false
+			pokeSprite.src = gastly
 		}
 	}
 }
