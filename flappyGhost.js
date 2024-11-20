@@ -163,8 +163,12 @@ function moveGhost(key) {
 
 function superEffective(a, b)
 {
-	return	a.x < b.x + b.width &&
-			a.x + a.width > b.x &&
-			a.y < b.y + b.height &&
-			a.y + a.height > b.y
+
+	const insetA = 8
+	const insetB = 8
+
+	return	a.x + insetA < b.x + b.width - insetB &&
+        	a.x + a.width - insetA > b.x + insetB &&
+        	a.y + insetA < b.y + b.height - insetB &&
+        	a.y + a.height - insetA > b.y + insetB
 }
